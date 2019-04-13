@@ -76,15 +76,22 @@ public class Game extends Canvas implements Runnable {
     }
 
     public void init() {
+        //KeyInput listener
         addKeyListener(new KeyListener());
+
+        //Sprite object
         spriteSheet = new SpriteSheet("/res/spriteSheet.png");
-        level = ResourceManager.getInstance().getImage("/res/level.png");
-        playerMoveFrame = new Sprite[8];
         wall = new Sprite(spriteSheet, 1, 1);
-//        player = new Player(100, 500, playerWidth, playerHeight, Id.player);
+
+        //BufferedImage object
+        level = ResourceManager.getInstance().getImage("/res/level.png");
+
+        //Game object
+        playerMoveFrame = new Sprite[8];
         handler = new Handler();
         cam = new Camera();
 
+        //Create level
         for(int i=0;i<playerMoveFrame.length;i++) {
             playerMoveFrame[i] = new Sprite(spriteSheet,i + 1, 16);
         }

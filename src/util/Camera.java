@@ -8,8 +8,8 @@ public class Camera {
     private int y;
 
     public void update(Entity player) {
-        setX(-player.getX() + Game.WIDTH/2);
-        setY(-player.getY() + Game.HEIGHT/2);
+        setX(-player.getX() + Game.WIDTH);
+        setY(-player.getY() + Game.HEIGHT*2);
     }
 
     public int getX() {

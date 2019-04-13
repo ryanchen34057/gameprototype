@@ -3,6 +3,7 @@ package input;
 import UI.Game;
 import character.Id;
 import character.Player;
+import enums.State;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,21 +17,24 @@ public class KeyListener extends KeyAdapter {
             if(Game.handler.getEntities().get(i).getId() == Id.player) {
                 p = (Player) Game.handler.getEntities().get(i);
                 switch (key) {
-                    case KeyEvent.VK_W:
-                        if(!p.isJumping()) {
-                            p.setJumping(true);
-                            p.setGravity(8);
+                    case KeyEvent.VK_SPACE:
+                        if(p.getCurrentState() == State.RUNNING || p.getCurrentState() == State.STANDING) {
+                            p.setPrevioudState(p.getPrevioudState());
+                            p.setCurrentState(State.JUMPING);
+                            p.setGravity(7);
                         }
                         break;
                     case KeyEvent.VK_A:
                         p.setVelX(-5);
+                        p.setPrevioudState(p.getPrevioudState());
+                        p.setCurrentState(State.RUNNING);
                         p.setFacing(0);
-                        p.setAnimate(true);
                         break;
                     case KeyEvent.VK_D:
                         p.setVelX(5);
+                        p.setPrevioudState(p.getPrevioudState());
+                        p.setCurrentState(State.RUNNING);
                         p.setFacing(1);
-                        p.setAnimate(true);
                         break;
                 }
             }
@@ -45,16 +49,18 @@ public class KeyListener extends KeyAdapter {
             if(Game.handler.getEntities().get(i).getId() == Id.player) {
                 p = (Player) Game.handler.getEntities().get(i);
                 switch (key) {
-                    case KeyEvent.VK_W:
+                    case KeyEvent.VK_SPACE:
                         p.setVelY(0);
                         break;
                     case KeyEvent.VK_A:
                         p.setVelX(0);
-                        p.setAnimate(false);
+                        p.setPrevioudState(p.getPrevioudState());
+                        p.setCurrentState(State.STANDING);
                         break;
                     case KeyEvent.VK_D:
                         p.setVelX(0);
-                        p.setAnimate(false);
+                        p.setPrevioudState(p.getPrevioudState());
+                        p.setCurrentState(State.STANDING);
                         break;
                 }
             }

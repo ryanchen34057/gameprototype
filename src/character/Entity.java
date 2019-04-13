@@ -1,5 +1,7 @@
 package character;
 
+import enums.State;
+
 import java.awt.*;
 
 public abstract class Entity {
@@ -16,13 +18,12 @@ public abstract class Entity {
     private double gravity;
     private double friction;
 
-    //State
-    private boolean animate;
-    private boolean isJumping;
-    private boolean isFalling;
-
     //info
     private Id id;
+
+    // State
+    private State currentState;
+    private State previoudState;
 
     public Entity(int x, int y, int width, int height, Id id) {
         this.x = x;
@@ -32,11 +33,10 @@ public abstract class Entity {
         this.velX = 0;
         this.velY = 0;
         gravity = 0;
-        isFalling = false;
-        isJumping = false;
         this.id = id;
         facing = 0;
-        animate = false;
+        currentState = State.FALLING;
+        previoudState = null;
     }
 
     //getters and setters
@@ -82,26 +82,26 @@ public abstract class Entity {
     public Id getId() {
         return id;
     }
-    public boolean isJumping() { return isJumping; }
-    public boolean isFalling() {
-        return isFalling;
-    }
-    public void setJumping(boolean state) { isJumping = state; }
-    public void setFalling(boolean state) { isFalling = state; }
     public double getGravity() {
         return gravity;
     }
     public void setGravity(double gravity) {
-        this.gravity += gravity;
+        this.gravity = gravity;
     }
     public void setFacing(int facing) {
         this.facing = facing;
     }
-    public boolean isAnimate() {
-        return animate;
+    public State getCurrentState() {
+        return currentState;
     }
-    public void setAnimate(boolean animate) {
-        this.animate = animate;
+    public void setCurrentState(State currentState) {
+        this.currentState = currentState;
+    }
+    public State getPrevioudState() {
+        return previoudState;
+    }
+    public void setPrevioudState(State previoudState) {
+        this.previoudState = previoudState;
     }
 
     // Drawing method
