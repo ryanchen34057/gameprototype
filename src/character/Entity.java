@@ -17,13 +17,11 @@ public abstract class Entity {
     //Physics
     private double gravity;
     private double friction;
+    private int step;
 
     //info
     private Id id;
 
-    // State
-    private State currentState;
-    private State previoudState;
 
     public Entity(int x, int y, int width, int height, Id id) {
         this.x = x;
@@ -35,8 +33,7 @@ public abstract class Entity {
         gravity = 0;
         this.id = id;
         facing = 0;
-        currentState = State.FALLING;
-        previoudState = null;
+        step = 5;
     }
 
     //getters and setters
@@ -91,17 +88,8 @@ public abstract class Entity {
     public void setFacing(int facing) {
         this.facing = facing;
     }
-    public State getCurrentState() {
-        return currentState;
-    }
-    public void setCurrentState(State currentState) {
-        this.currentState = currentState;
-    }
-    public State getPrevioudState() {
-        return previoudState;
-    }
-    public void setPrevioudState(State previoudState) {
-        this.previoudState = previoudState;
+    public int getStep() {
+        return step;
     }
 
     // Drawing method
@@ -118,7 +106,7 @@ public abstract class Entity {
         return new Rectangle(getX()+20, getY(), width-40,5 );
     }
     public Rectangle getBoundsBottom() {
-        return new Rectangle(getX()+20, getY()+height-5, width-40,5 );
+        return new Rectangle(getX()+20, getY()+height, width-40,5 );
     }
     public Rectangle getBoundsLeft() {
         return new Rectangle(getX(), getY()+20, 5,height-40 );

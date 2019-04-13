@@ -4,6 +4,7 @@ import UI.Game;
 import enums.Direction;
 import enums.State;
 import level.Tile;
+import util.Handler;
 
 
 import java.awt.*;
@@ -13,10 +14,22 @@ public class Player extends Entity {
     private int frame;
     private int frameDelay;
 
+    // State
+    private boolean isJumping;
+    private boolean isFalling;
+    private boolean animate;
+    private boolean isOnTheGround;
+
+    public static final int normalJumpHeight = 11;
+
     public Player(int x, int y, int width, int height, Id id) {
         super(x, y, width, height, id);
         frameDelay = 0;
         frame = 0;
+        isJumping = false;
+        isFalling = false;
+        animate = false;
+        isOnTheGround = false;
     }
 
     @Override
@@ -32,27 +45,70 @@ public class Player extends Entity {
 
     @Override
     public void update() {
-        super.setX(super.getX() + super.getVelX());
-        super.setY(super.getY() + super.getVelY());
+        setX(getX() + getVelX());
+        setY(getY() + getVelY());
 
-        System.out.println(getPrevioudState() + " " + getCurrentState());
+        if (getVelX() != 0) animate = true;
+        else animate = false;
 
-        Direction hCollision, vCollision;
-        hCollision = horizontalCollision();
-        vCollision = verticalCollision();
-        if(vCollision == null && getCurrentState() == State.RUNNING) {
-            setPrevioudState(getCurrentState());
-            setCurrentState(State.FALLING);
-            setGravity(0.6);
+        boolean didIstepOnTheGround = false;
+        Tile t;
+        for (int i = 0; i < Game.handler.getTiles().size(); i++) {
+            t = Game.handler.getTiles().get(i);
+            if (t.getId() == Id.wall) {
+                if (checkCollisionTop(t)) {
+                    setVelY(0);
+                    if (isJumping) {
+                        isJumping = false;
+                        isFalling = true;
+                    }
+                }
+                if (checkCollisionBottom(t)) {
+                    setVelY(0);
+                    isOnTheGround = true;
+                    if(isFalling) {
+                        isFalling = false;
+                    }
+                    didIstepOnTheGround = true;
+                }
+                if (checkCollisionLeft(t)) {
+                    setVelX(0);
+                    setX(t.getX() + t.getWidth());
+                }
+                if (checkCollisionRight(t)) {
+                    setVelX(0);
+                    setX(t.getX() - t.getWidth());
+                }
+            }
         }
 
-        checkJumping();
-        checkFalling();
+        //Check if on the ground
+        if(!didIstepOnTheGround) {
+            isOnTheGround = false;
+        }
+        if(!isOnTheGround) {
+            if(!isFalling && !isJumping) {
+                setGravity(0.5);
+                isFalling = true;
+                isOnTheGround = false;
+            }
+        }
 
-        //Change facing
-        if (getCurrentState() == State.RUNNING) {
+        if (isJumping) {
+            setGravity(getGravity() - 0.3);
+            setVelY((int) -getGravity());
+            if (getGravity() <= 0.0) {
+                isJumping = false;
+                isFalling = true;
+            }
+        }
+        if (isFalling) {
+            setGravity(getGravity() + 0.2);
+            setVelY((int) getGravity());
+        }
+        if (animate && !isJumping && !isFalling) {
             frameDelay++;
-            if (frameDelay >= Game.getPlayerMoveFrame().length / 2) {
+            if (frameDelay >= 3) {
                 frame++;
                 if (frame >= Game.getPlayerMoveFrame().length / 2) {
                     frame = 0;
@@ -62,63 +118,49 @@ public class Player extends Entity {
         }
     }
 
-    private Direction horizontalCollision() {
-        Tile t;
-        for (int i = 0; i < Game.handler.getTiles().size(); i++) {
-            t = Game.handler.getTiles().get(i);
-            if (getBoundsLeft().intersects(t.getBounds())) {
-                setVelX(0);
-                setX(t.getX() + t.getWidth());
-                return Direction.LEFT;
-            }
-            if (getBoundsRight().intersects(t.getBounds())) {
-                setVelX(0);
-                setX(t.getX() - t.getWidth());
-                return Direction.RIGHT;
-            }
-        }
-        return null;
+    public boolean isJumping() {
+        return isJumping;
     }
 
-    private Direction verticalCollision() {
-        Tile t;
-        for (int i = 0; i < Game.handler.getTiles().size(); i++) {
-            t = Game.handler.getTiles().get(i);
-            if (getBoundsBottom().intersects(t.getBounds())) {
-                setVelY(0);
-                setY(t.getY() - t.getHeight());
-                setPrevioudState(getCurrentState());
-                setCurrentState(State.STANDING);
-                return Direction.DOWN;
-            }
-            if (getBoundsTop().intersects(t.getBounds())) {
-                setY(t.getY() + t.getHeight());
-                if (getCurrentState() == State.JUMPING) {
-                    setPrevioudState(State.JUMPING);
-                    setCurrentState(State.FALLING);
-                    setGravity(0.6);
-                }
-                return Direction.UP;
-            }
-        }
-        return null;
+    public void setJumping(boolean jumping) {
+        isJumping = jumping;
     }
 
-    private void checkJumping() {
-        if(getCurrentState() == State.JUMPING) {
-            setGravity(getGravity() - 0.1);
-            setVelY((int) -getGravity());
-            if (getGravity() <= 0) {
-                setPrevioudState(State.JUMPING);
-                setCurrentState(State.FALLING);
-            }
-        }
+    public boolean isFalling() {
+        return isFalling;
     }
 
-    private void checkFalling() {
-        if(getCurrentState() == State.FALLING) {
-            setGravity(getGravity() + 0.1);
-            setVelY((int) getGravity());
-        }
+    public void setFalling(boolean falling) {
+        isFalling = falling;
     }
+
+    public boolean isAnimate() {
+        return animate;
+    }
+
+    public void setAnimate(boolean animate) {
+        this.animate = animate;
+    }
+
+    public boolean isOnTheGround() {
+        return isOnTheGround;
+    }
+
+    public void setOnTheGround(boolean onTheGround) {
+        isOnTheGround = onTheGround;
+    }
+
+    private boolean checkCollisionTop(Tile t) {
+        return getBoundsTop().intersects(t.getBounds());
+    }
+    private boolean checkCollisionBottom(Tile t) {
+        return getBoundsBottom().intersects(t.getBounds());
+    }
+    private boolean checkCollisionLeft(Tile t) {
+        return getBoundsLeft().intersects(t.getBounds());
+    }
+    private boolean checkCollisionRight(Tile t) {
+        return getBoundsRight().intersects(t.getBounds());
+    }
+
 }

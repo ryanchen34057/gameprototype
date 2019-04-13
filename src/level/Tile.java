@@ -54,6 +54,9 @@ public abstract class Tile {
     public void setHeight(int height) {
         this.height = height;
     }
+    public Id getId() {
+        return id;
+    }
 
     // Drawing method
     public abstract void paint(Graphics g);
