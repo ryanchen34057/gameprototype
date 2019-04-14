@@ -1,7 +1,5 @@
 package character;
 
-import enums.State;
-
 import java.awt.*;
 
 public abstract class Entity {
@@ -10,9 +8,9 @@ public abstract class Entity {
     private int y;
     private int width;
     private int height;
-    private int velX;
-    private int velY;
-    private int facing;  //0 -> left, 1 -> right
+    private double velX;
+    private double velY;
+    private int facing;  //-1 -> left, 1 -> right
 
     //Physics
     private double gravity;
@@ -61,16 +59,16 @@ public abstract class Entity {
     public void setHeight(int height) {
         this.height = height;
     }
-    public int getVelX() {
+    public double getVelX() {
         return velX;
     }
-    public void setVelX(int velX) {
+    public void setVelX(double velX) {
         this.velX = velX;
     }
-    public int getVelY() {
+    public double getVelY() {
         return velY;
     }
-    public void setVelY(int velY) {
+    public void setVelY(double velY) {
         this.velY = velY;
     }
     public int getFacing() {
@@ -103,16 +101,16 @@ public abstract class Entity {
         return new Rectangle(getX(), getY(), width, height);
     }
     public Rectangle getBoundsTop() {
-        return new Rectangle(getX()+20, getY(), width-40,5 );
+        return new Rectangle(getX()+40, getY(), width-80,1 );
     }
     public Rectangle getBoundsBottom() {
-        return new Rectangle(getX()+20, getY()+height, width-40,5 );
+        return new Rectangle(getX()+40, getY()+height, width-80,1 );
     }
     public Rectangle getBoundsLeft() {
-        return new Rectangle(getX(), getY()+20, 5,height-40 );
+        return new Rectangle(getX()+25, getY()+20, 1,height-40 );
     }
     public Rectangle getBoundsRight() {
-        return new Rectangle(getX()+width-5, getY()+20, 5,height-40 );
+        return new Rectangle(getX()+width-25, getY()+20, 1,height-40 );
     }
 
 }

@@ -14,6 +14,8 @@ public class Wall extends Tile {
     public void paint(Graphics g) {
             g.drawImage(Game.wall.getBufferedImage(), super.getX(), super.getY(),
                     super.getWidth(), super.getHeight(), null);
+            g.setColor(Color.RED);
+            g.drawRect(super.getX(), super.getY(), super.getWidth(), super.getHeight());
     }
 
     @Override

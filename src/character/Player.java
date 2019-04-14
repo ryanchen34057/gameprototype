@@ -1,11 +1,16 @@
 package character;
 
 import UI.Game;
+import graphics.MoveFrameManager;
 import input.Input;
 import level.Tile;
+import states.PlayerState;
+import states.StateMachine;
+import util.Handler;
 
 
 import java.awt.*;
+import java.util.Stack;
 
 public class Player extends Entity {
 
@@ -16,6 +21,9 @@ public class Player extends Entity {
     private float startDashTime;
 
     // State
+    public static Stack<StateMachine> stateStack;
+    public  StateMachine currentState;
+    public StateMachine prevState;
     private boolean isJumping;
     private boolean isFalling;
     private boolean animate;
@@ -38,104 +46,102 @@ public class Player extends Entity {
         isTired = false;
         startDashTime = 0.1f;
         dashTime = startDashTime;
+        stateStack = new Stack<>();
+        prevState = null;
+        currentState = PlayerState.standing;
+        stateStack.push(currentState);
     }
 
     @Override
     public void paint(Graphics g) {
-        if (super.getFacing() == 0) {
-            g.drawImage(Game.getPlayerMoveFrame()[frame + 4].getBufferedImage(), super.getX(), super.getY(),
+        if (super.getFacing() == -1) {
+            g.drawImage(MoveFrameManager.getPlayerMoveFrame(currentState)[frame + 4].getBufferedImage(), super.getX(), super.getY(),
                     super.getWidth(), super.getHeight(), null);
         } else {
-            g.drawImage(Game.getPlayerMoveFrame()[frame].getBufferedImage(), super.getX(), super.getY(),
+            g.drawImage(MoveFrameManager.getPlayerMoveFrame(currentState)[frame].getBufferedImage(), super.getX(), super.getY(),
                     super.getWidth(), super.getHeight(), null);
         }
+        g.setColor(Color.BLUE);
+        g.drawRect(super.getX(), super.getY(), getWidth(), getHeight());
+        g.drawRect(super.getX()+40, super.getY(), getWidth()-80, 1);
+        g.drawRect(super.getX()+40, super.getY()+getHeight(), getWidth()-80, 1);
+        g.drawRect(super.getX()+25, super.getY()+20, 1, getWidth()-40);
+        g.drawRect(super.getX()+getWidth()-25, super.getY()+20,1, getWidth()-40);
     }
 
     @Override
     public void update() {
+        if(prevState != currentState) {
+            prevState = currentState;
+            System.out.println(prevState);
+        }
+        setX(getX() + (int)getVelX());
+        setY(getY() + (int)getVelY());
         handleKeyInput();
-        setX(getX() + getVelX());
-        setY(getY() + getVelY());
+        currentState.update(this);
 
-        if (getVelX() != 0) animate = true;
-        else animate = false;
-
-        boolean didIstepOnTheGround = false;
+        isOnTheGround = false;
         Tile t;
         for (int i = 0; i < Game.handler.getTiles().size(); i++) {
             t = Game.handler.getTiles().get(i);
             if (t.getId() == Id.wall) {
                 if (checkCollisionTop(t)) {
-                    setVelY(0);
-                    if (isJumping) {
-                        isJumping = false;
-                        isFalling = true;
+                    if(currentState == PlayerState.standingJumping || currentState == PlayerState.runningJumping) {
+                        setGravity(0.8);
+                        setVelY(0);
+                        setY(t.getY() + getHeight());
+                        currentState = PlayerState.falling;
                     }
+
                 }
                 if (checkCollisionBottom(t)) {
-                    setVelY(0);
-                    isOnTheGround = true;
-                    if(isFalling) {
-                        isFalling = false;
+                    if(currentState == PlayerState.falling) {
+                        setVelY(0);
+                        setY(t.getY() - getHeight());
+                        currentState = PlayerState.standing;
                     }
-                    didIstepOnTheGround = true;
+                    isOnTheGround = true;
                 }
+
                 if (checkCollisionLeft(t)) {
                     setVelX(0);
-                    setX(t.getX() + t.getWidth());
+                    setX(t.getX() + t.getWidth() - 25);
+                    if(currentState == PlayerState.falling && Input.keys.get(2).down) {
+                        currentState = PlayerState.sliding;
+                    }
                 }
                 if (checkCollisionRight(t)) {
                     setVelX(0);
-                    setX(t.getX() - t.getWidth());
+                    setX(t.getX() - getWidth() + 25);
+                    if(currentState == PlayerState.falling && Input.keys.get(3).down) {
+                        currentState = PlayerState.sliding;
+                    }
+                }
+            }
+            if(t.getId() == Id.spike) {
+                if (checkCollisionTop(t)) {
+                    Game.handler.getEntities().remove(this);
+                }
+                if (checkCollisionBottom(t)) {
+                    Game.handler.getEntities().remove(this);
+                }
+
+                if (checkCollisionLeft(t)) {
+                    Game.handler.getEntities().remove(this);
+                }
+                if (checkCollisionRight(t)) {
+                    Game.handler.getEntities().remove(this);
                 }
             }
         }
-
         //Check if on the ground
-        if(!didIstepOnTheGround) {
-            isOnTheGround = false;
-        }
-        if(!isOnTheGround) {
-            if(!isFalling && !isJumping) {
-                setGravity(0.5);
-                isFalling = true;
-                isOnTheGround = false;
-            }
+        if(isOnTheGroundCondition()) {
+            currentState = PlayerState.falling;
         }
 
-        if (isJumping) {
-            setGravity(getGravity() - 0.3);
-            setVelY((int) -getGravity());
-            if (getGravity() <= 0.0) {
-                isJumping = false;
-                isFalling = true;
-            }
-        }
-        if (isFalling) {
-            setGravity(getGravity() + 0.2);
-            setVelY((int) getGravity());
-        }
-
-//        if(dash) {
-//            if(dashTime > 0) {
-//                dashTime -= 0.001;
-//                if(getFacing() == 0) {
-//                    setVelX(getVelX()-dashSpeed);
-//                }
-//                else {
-//                    setVelX(getVelX() + dashSpeed);
-//                }
-//            }
-//            else {
-//                dashTime = startDashTime;
-//                dash = false;
-//            }
-//
-//        }
-
-        if (animate && !isJumping && !isFalling) {
+        if(currentState == PlayerState.standing) {
             frameDelay++;
-            if (frameDelay >= 3) {
+            if (frameDelay >= 30) {
                 frame++;
                 if (frame >= Game.getPlayerMoveFrame().length / 2) {
                     frame = 0;
@@ -143,89 +149,21 @@ public class Player extends Entity {
                 frameDelay = 0;
             }
         }
+        else {
+            frameDelay++;
+            if (frameDelay >= 5) {
+                frame++;
+                if (frame >= Game.getPlayerMoveFrame().length / 2) {
+                    frame = 0;
+                }
+                frameDelay = 0;
+            }
+        }
+
     }
 
     public void handleKeyInput() {
-        // up, down, left, right, x, c
-        // X Key(Dash)
-        if(Input.keys.get(4).down) {
-            if(!dash) {
-                dash = true;
-            }
-        }
-        // C Key(jump)
-        if (Input.keys.get(5).down && Input.keys.get(2).down) {
-            if (!isJumping() && isOnTheGround() && !isFalling()) {
-                setOnTheGround(false);
-                setJumping(true);
-                setGravity(Player.normalJumpHeight);
-                setVelX(-getStep()-2);
-                setFacing(0);
-            }
-        }
-        else if (Input.keys.get(5).down && Input.keys.get(3).down) {
-            if (!isJumping() && isOnTheGround() && !isFalling()) {
-                setOnTheGround(false);
-                setJumping(true);
-                setGravity(Player.normalJumpHeight);
-                setVelX(getStep()+2);
-                setFacing(1);
-            }
-        }
-        else if ((Input.keys.get(5).down)) {
-            if (!isJumping() && isOnTheGround() && !isFalling()) {
-                setOnTheGround(false);
-                setJumping(true);
-                setGravity(Player.normalJumpHeight);
-            }
-        }
-        // left Key
-        else if (Input.keys.get(2).down) {
-            setVelX(-getStep());
-            setFacing(0);
-        }
-        // right Key
-        else if (Input.keys.get(3).down) {
-            setVelX(getStep());
-            setFacing(1);
-        }
-
-        // If no key was pressed
-        else {
-            setVelX(0);
-        }
-    }
-
-    public boolean isJumping() {
-        return isJumping;
-    }
-
-    public void setJumping(boolean jumping) {
-        isJumping = jumping;
-    }
-
-    public boolean isFalling() {
-        return isFalling;
-    }
-
-    public void setFalling(boolean falling) {
-        isFalling = falling;
-    }
-
-    public boolean isAnimate() {
-        return animate;
-    }
-
-    public void setAnimate(boolean animate) {
-        this.animate = animate;
-    }
-
-    public boolean isOnTheGround() {
-        return isOnTheGround;
-    }
-
-    public void setOnTheGround(boolean onTheGround) {
-        isOnTheGround = onTheGround;
+        currentState.handleKeyInput(this, Input.keys);
     }
 
     private boolean checkCollisionTop(Tile t) {
@@ -239,6 +177,12 @@ public class Player extends Entity {
     }
     private boolean checkCollisionRight(Tile t) {
         return getBoundsRight().intersects(t.getBounds());
+    }
+
+    private boolean isOnTheGroundCondition() {
+        return !isOnTheGround && currentState != PlayerState.standingJumping && currentState != PlayerState.runningJumping
+                && currentState != PlayerState.dashJumping && currentState != PlayerState.falling
+                && currentState != PlayerState.standing && currentState != PlayerState.sliding && currentState != PlayerState.bouncing;
     }
 
 }

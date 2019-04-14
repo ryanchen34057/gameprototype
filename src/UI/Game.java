@@ -27,11 +27,12 @@ public class Game extends Canvas implements Runnable {
     public static final int playerHeight = 100;
 
     //Sprite sheet
-    private SpriteSheet spriteSheet;
+    public static SpriteSheet spriteSheet;
 
     //UI.Game object
     private static Sprite[] playerMoveFrame;
     public static  Sprite wall;
+    public static Sprite spike;
 
     //level
     private BufferedImage level;
@@ -81,6 +82,7 @@ public class Game extends Canvas implements Runnable {
         //Sprite object
         spriteSheet = new SpriteSheet("/res/spriteSheet.png");
         wall = new Sprite(spriteSheet, 1, 1);
+        spike = new Sprite(spriteSheet, 1, 2);
 
         //BufferedImage object
         level = ResourceManager.getInstance().getImage("/res/level.png");
@@ -91,9 +93,6 @@ public class Game extends Canvas implements Runnable {
         cam = new Camera();
 
         //Create level
-        for(int i=0;i<playerMoveFrame.length;i++) {
-            playerMoveFrame[i] = new Sprite(spriteSheet,i + 1, 16);
-        }
         handler.createLevel(level);
 
         keyListener = new Input();

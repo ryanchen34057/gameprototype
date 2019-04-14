@@ -4,6 +4,7 @@ import UI.Game;
 import character.Entity;
 import character.Id;
 import character.Player;
+import level.Spike;
 import level.Tile;
 import level.Wall;
 
@@ -66,7 +67,10 @@ public class Handler {
                     addObject(new Wall(x*64, y*64, 64, 64, false, Id.wall));
                 }
                 if(red == 0 && green == 0 && blue == 255) {
-                    addObject(new Player(x*64, y*64, 64, 64,Id.player));
+                    addObject(new Player(x*64, y*64, 96, 96,Id.player));
+                }
+                if(red == 0 && green == 255 && blue == 0) {
+                    addObject(new Spike(x*64, y*64, 64, 64, false, Id.spike));
                 }
             }
         }
