@@ -12,8 +12,8 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
 public class Handler {
-    private LinkedList<Entity> entities;
-    private LinkedList<Tile> tiles;
+    private static LinkedList<Entity> entities;
+    private static LinkedList<Tile> tiles;
 
     public Handler() {
         entities = new LinkedList<>();
@@ -71,4 +71,6 @@ public class Handler {
             }
         }
     }
+
+    public static Player getPlayer() { return (Player) entities.get(0); }
 }

@@ -1,10 +1,8 @@
 package character;
 
 import UI.Game;
-import enums.Direction;
-import enums.State;
+import input.Input;
 import level.Tile;
-import util.Handler;
 
 
 import java.awt.*;
@@ -13,12 +11,17 @@ public class Player extends Entity {
 
     private int frame;
     private int frameDelay;
+    private int dashSpeed;
+    private float dashTime;
+    private float startDashTime;
 
     // State
     private boolean isJumping;
     private boolean isFalling;
     private boolean animate;
     private boolean isOnTheGround;
+    private boolean dash;
+    private boolean isTired;
 
     public static final int normalJumpHeight = 11;
 
@@ -30,6 +33,11 @@ public class Player extends Entity {
         isFalling = false;
         animate = false;
         isOnTheGround = false;
+        dash = false;
+        dashSpeed = 10;
+        isTired = false;
+        startDashTime = 0.1f;
+        dashTime = startDashTime;
     }
 
     @Override
@@ -45,6 +53,7 @@ public class Player extends Entity {
 
     @Override
     public void update() {
+        handleKeyInput();
         setX(getX() + getVelX());
         setY(getY() + getVelY());
 
@@ -106,6 +115,24 @@ public class Player extends Entity {
             setGravity(getGravity() + 0.2);
             setVelY((int) getGravity());
         }
+
+//        if(dash) {
+//            if(dashTime > 0) {
+//                dashTime -= 0.001;
+//                if(getFacing() == 0) {
+//                    setVelX(getVelX()-dashSpeed);
+//                }
+//                else {
+//                    setVelX(getVelX() + dashSpeed);
+//                }
+//            }
+//            else {
+//                dashTime = startDashTime;
+//                dash = false;
+//            }
+//
+//        }
+
         if (animate && !isJumping && !isFalling) {
             frameDelay++;
             if (frameDelay >= 3) {
@@ -115,6 +142,57 @@ public class Player extends Entity {
                 }
                 frameDelay = 0;
             }
+        }
+    }
+
+    public void handleKeyInput() {
+        // up, down, left, right, x, c
+        // X Key(Dash)
+        if(Input.keys.get(4).down) {
+            if(!dash) {
+                dash = true;
+            }
+        }
+        // C Key(jump)
+        if (Input.keys.get(5).down && Input.keys.get(2).down) {
+            if (!isJumping() && isOnTheGround() && !isFalling()) {
+                setOnTheGround(false);
+                setJumping(true);
+                setGravity(Player.normalJumpHeight);
+                setVelX(-getStep()-2);
+                setFacing(0);
+            }
+        }
+        else if (Input.keys.get(5).down && Input.keys.get(3).down) {
+            if (!isJumping() && isOnTheGround() && !isFalling()) {
+                setOnTheGround(false);
+                setJumping(true);
+                setGravity(Player.normalJumpHeight);
+                setVelX(getStep()+2);
+                setFacing(1);
+            }
+        }
+        else if ((Input.keys.get(5).down)) {
+            if (!isJumping() && isOnTheGround() && !isFalling()) {
+                setOnTheGround(false);
+                setJumping(true);
+                setGravity(Player.normalJumpHeight);
+            }
+        }
+        // left Key
+        else if (Input.keys.get(2).down) {
+            setVelX(-getStep());
+            setFacing(0);
+        }
+        // right Key
+        else if (Input.keys.get(3).down) {
+            setVelX(getStep());
+            setFacing(1);
+        }
+
+        // If no key was pressed
+        else {
+            setVelX(0);
         }
     }
 

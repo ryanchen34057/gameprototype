@@ -33,7 +33,7 @@ public abstract class Entity {
         gravity = 0;
         this.id = id;
         facing = 0;
-        step = 5;
+        step = 3;
     }
 
     //getters and setters

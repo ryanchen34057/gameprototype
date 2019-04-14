@@ -1,10 +1,9 @@
 package UI;
 
 import character.Id;
-import character.Player;
 import graphics.Sprite;
 import graphics.SpriteSheet;
-import input.KeyListener;
+import input.Input;
 import util.Camera;
 import util.Handler;
 import util.ResourceManager;
@@ -43,6 +42,9 @@ public class Game extends Canvas implements Runnable {
     // Camera
     private Camera cam;
 
+    // KeyListener
+    private Input keyListener;
+
     public Game() {
         running = false;
         Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
@@ -76,9 +78,6 @@ public class Game extends Canvas implements Runnable {
     }
 
     public void init() {
-        //KeyInput listener
-        addKeyListener(new KeyListener());
-
         //Sprite object
         spriteSheet = new SpriteSheet("/res/spriteSheet.png");
         wall = new Sprite(spriteSheet, 1, 1);
@@ -96,6 +95,11 @@ public class Game extends Canvas implements Runnable {
             playerMoveFrame[i] = new Sprite(spriteSheet,i + 1, 16);
         }
         handler.createLevel(level);
+
+        keyListener = new Input();
+
+        //KeyInput listener
+        addKeyListener(keyListener);
     }
 
     private synchronized void start() {
