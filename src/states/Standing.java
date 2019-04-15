@@ -12,7 +12,7 @@ public class Standing implements StateMachine {
             player.setFacing(-1);
             player.currentState = PlayerState.running;
         }
-        else if(keys.get(3).down) {
+        if(keys.get(3).down) {
             player.setFacing(1);
             player.currentState = PlayerState.running;
         }
@@ -20,11 +20,9 @@ public class Standing implements StateMachine {
             player.setGravity(10.0);
             player.currentState = PlayerState.standingJumping;
         }
-        else if(keys.get(4).down) {
-            if(!PlayerState.dashing.isTired) {
-                player.currentState = PlayerState.dashing;
-                PlayerState.dashing.isTired = true;
-            }
+        else if(keys.get(4).down && !PlayerState.dashing.isTired) {
+            player.currentState = PlayerState.dashing;
+            PlayerState.dashing.isTired = true;
         }
         else if(!keys.get(4).down) {
             PlayerState.dashing.isTired = false;

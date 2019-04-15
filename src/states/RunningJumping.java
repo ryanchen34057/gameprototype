@@ -14,8 +14,11 @@ public class RunningJumping implements StateMachine{
         else if(keys.get(3).down) {
             player.setFacing(1);
         }
-
-
+        else if(keys.get(4).down && !PlayerState.dashing.isTired) {
+            player.setVelY(0);
+            player.currentState = PlayerState.dashingInTheAir;
+            PlayerState.dashingInTheAir.isTired = true;
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@ public class Game extends Canvas implements Runnable {
     private static final String TITLE = "UI.Game Prototype";
     private Thread thread;
     private boolean running;
+    public static boolean debugMode;
 
     //Size
     public static final int WIDTH = 270;
@@ -48,6 +49,7 @@ public class Game extends Canvas implements Runnable {
 
     public Game() {
         running = false;
+        debugMode = true;
         Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
         setPreferredSize(size);
         setMaximumSize(size);
@@ -85,7 +87,7 @@ public class Game extends Canvas implements Runnable {
         spike = new Sprite(spriteSheet, 1, 2);
 
         //BufferedImage object
-        level = ResourceManager.getInstance().getImage("/res/level.png");
+        level = ResourceManager.getInstance().getImage("/res/TEST3.png");
 
         //Game object
         playerMoveFrame = new Sprite[8];

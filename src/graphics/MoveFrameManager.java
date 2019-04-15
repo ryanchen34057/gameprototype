@@ -35,6 +35,9 @@ public class MoveFrameManager {
         if(currentState instanceof Bouncing) {
             y = 13;
         }
+        if(currentState instanceof DashingInTheAir) {
+            y = 10;
+        }
         for(int i=0;i<playerMoveFrame.length;i++) {
             playerMoveFrame[i] = new Sprite(Game.spriteSheet,i + 1, y);
         }

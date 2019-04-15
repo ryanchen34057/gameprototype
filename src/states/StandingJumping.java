@@ -16,8 +16,11 @@ public class StandingJumping implements StateMachine {
             player.setFacing(1);
             player.setVelX((player.getStep() / 1.5));
         }
-
-
+        else if(keys.get(4).down && !PlayerState.dashing.isTired) {
+            player.setVelY(0);
+            player.currentState = PlayerState.dashingInTheAir;
+            PlayerState.dashingInTheAir.isTired = true;
+        }
     }
 
     @Override

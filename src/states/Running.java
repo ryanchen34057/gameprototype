@@ -8,6 +8,12 @@ import java.util.List;
 public class Running implements StateMachine {
     @Override
     public void handleKeyInput(Player player, List<Input.Key> keys) {
+        if(keys.get(2).down) {
+            player.setFacing(-1);
+        }
+        else if(keys.get(3).down) {
+            player.setFacing(1);
+        }
         if(!keys.get(2).down && !keys.get(3).down) {
             player.currentState = PlayerState.standing;
         }

@@ -14,6 +14,9 @@ public class Spike extends Tile{
     public void paint(Graphics g) {
         g.drawImage(Game.spike.getBufferedImage(), super.getX(), super.getY(),
                 super.getWidth(), super.getHeight(), null);
+        if(Game.debugMode) {
+            g.drawRect(getX()+20, getY(), super.getWidth()-40,1);
+        }
     }
 
     @Override

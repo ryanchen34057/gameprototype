@@ -10,7 +10,7 @@ public class Sliding implements StateMachine {
     @Override
     public void handleKeyInput(Player player, List<Input.Key> keys) {
         if(keys.get(5).down) {
-            player.setGravity(7);
+            player.setGravity(8);
             player.currentState = PlayerState.bouncing;
         }
         if(player.getFacing() == -1) {
@@ -25,14 +25,14 @@ public class Sliding implements StateMachine {
                 player.currentState = PlayerState.falling;
             }
         }
-
     }
 
     @Override
     public void update(Player player) {
+        player.accumulateFatigue();
         friction += 0.1;
         player.setVelY(friction);
-        if(friction >= 5) {
+        if(friction >= 5 || player.getFatigue() >= player.getSTAMINA()) {
             player.currentState = PlayerState.falling;
             friction = 0;
         }

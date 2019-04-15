@@ -110,7 +110,7 @@ public abstract class Entity {
         return new Rectangle(getX()+25, getY()+20, 1,height-40 );
     }
     public Rectangle getBoundsRight() {
-        return new Rectangle(getX()+width-25, getY()+20, 1,height-40 );
+        return new Rectangle(getX()+width-30, getY()+20, 1,height-40 );
     }
 
 }

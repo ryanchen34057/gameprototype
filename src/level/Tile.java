@@ -68,4 +68,14 @@ public abstract class Tile {
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), width, height);
     }
+    public Rectangle getBoundsTop() {
+        return new Rectangle(getX()+10, getY(), width-20,1 );
+    }
+    public Rectangle getBoundsBottom() {
+        return new Rectangle(getX()+10, getY()+height, width-20,1 );
+    }
+    public Rectangle getBoundsLeft() {
+        return new Rectangle(getX(), getY()+20, 1,height-40 );
+    }
+    public Rectangle getBoundsRight() { return new Rectangle(getX()+width, getY()+20, 1,height-40 ); }
 }

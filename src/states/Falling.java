@@ -16,6 +16,11 @@ public class Falling implements StateMachine {
             player.setFacing(1);
             player.setVelX(3);
         }
+        else if(keys.get(4).down && !PlayerState.dashingInTheAir.isTired) {
+            player.setVelY(0);
+            player.currentState = PlayerState.dashingInTheAir;
+            PlayerState.dashingInTheAir.isTired = true;
+        }
         else {
             player.setVelX(0);
         }

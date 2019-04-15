@@ -12,4 +12,5 @@ public class PlayerState {
     public static DashJumping dashJumping = new DashJumping();
     public static Sliding sliding = new Sliding();
     public static Bouncing bouncing = new Bouncing();
+    public static DashingInTheAir dashingInTheAir = new DashingInTheAir();
 }
