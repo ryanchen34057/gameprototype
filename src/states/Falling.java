@@ -10,11 +10,11 @@ public class Falling implements StateMachine {
     public void handleKeyInput(Player player, List<Input.Key> keys) {
         if(keys.get(2).down) {
             player.setFacing(-1);
-            player.setVelX(-3);
+            player.setVelX(-Player.FALLING_VELX);
         }
         else if(keys.get(3).down) {
             player.setFacing(1);
-            player.setVelX(3);
+            player.setVelX(Player.FALLING_VELX);
         }
         else if(keys.get(4).down && !PlayerState.dashingInTheAir.isTired) {
             player.setVelY(0);
@@ -28,7 +28,7 @@ public class Falling implements StateMachine {
 
     @Override
     public void update(Player player) {
-        player.setGravity(player.getGravity() + 0.3);
+        player.setGravity(player.getGravity() + Player.GRAVITY_OFFSET);
         player.setVelY((int) player.getGravity());
     }
 

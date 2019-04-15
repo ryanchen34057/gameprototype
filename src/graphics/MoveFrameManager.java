@@ -5,6 +5,7 @@ import states.*;
 
 public class MoveFrameManager {
     private static Sprite[] playerMoveFrame = new Sprite[8];
+    private static Sprite[] prizeFrame = new Sprite[8];
 
     public static Sprite[] getPlayerMoveFrame(StateMachine currentState) {
         int y = 0;
@@ -42,5 +43,12 @@ public class MoveFrameManager {
             playerMoveFrame[i] = new Sprite(Game.spriteSheet,i + 1, y);
         }
         return playerMoveFrame;
+    }
+
+    public static Sprite[] getPrizeFrame() {
+        for(int i=0;i<prizeFrame.length;i++) {
+            prizeFrame[i] = new Sprite(Game.spriteSheet,i + 1, 9);
+        }
+        return prizeFrame;
     }
 }

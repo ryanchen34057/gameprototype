@@ -14,8 +14,6 @@ public abstract class Entity {
 
     //Physics
     private double gravity;
-    private double friction;
-    private int step;
 
     //info
     private Id id;
@@ -31,7 +29,6 @@ public abstract class Entity {
         gravity = 0;
         this.id = id;
         facing = 0;
-        step = 3;
     }
 
     //getters and setters
@@ -85,9 +82,6 @@ public abstract class Entity {
     }
     public void setFacing(int facing) {
         this.facing = facing;
-    }
-    public int getStep() {
-        return step;
     }
 
     // Drawing method

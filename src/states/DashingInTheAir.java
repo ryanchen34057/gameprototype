@@ -15,13 +15,13 @@ public class DashingInTheAir implements StateMachine{
 
     @Override
     public void update(Player player) {
-        player.setVelX(player.getDashSpeed() * player.getFacing());
+        player.setVelX(player.CURRENT_DASH_SPEED * player.getFacing());
         dashTimer -= (60.0f / 1000.0f);
-        player.CURRENT_DASH_SPEED -= 0.5;
+        player.CURRENT_DASH_SPEED -= Player.DASH_SPEED_BUMP;
         if(dashTimer <= 0) {
             //Reset timer
             dashTimer = Player.DASH_TIMER;
-            player.setGravity(0.8);
+            player.setGravity(Player.FALLING_GRAVITY_VEL);
             player.currentState = PlayerState.falling;
             player.CURRENT_DASH_SPEED = Player.DASH_SPEED;
         }

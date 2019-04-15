@@ -18,7 +18,7 @@ public class Running implements StateMachine {
             player.currentState = PlayerState.standing;
         }
         if(keys.get(5).down) {
-            player.setGravity(8.0);
+            player.setGravity(Player.RUNNINGJUMPING_GRAVITY);
             player.currentState = PlayerState.runningJumping;
         }
         if(keys.get(4).down) {
@@ -34,7 +34,7 @@ public class Running implements StateMachine {
 
     @Override
     public void update(Player player) {
-        player.setVelX(player.getFacing() * player.getStep());
+        player.setVelX(player.getFacing() * Player.STEP);
     }
 
     @Override

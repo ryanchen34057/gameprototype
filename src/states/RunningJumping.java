@@ -23,8 +23,8 @@ public class RunningJumping implements StateMachine{
 
     @Override
     public void update(Player player) {
-        player.setVelX(player.getFacing() * (player.getStep()));
-        player.setGravity(player.getGravity() - 0.2);
+        player.setVelX(player.getFacing() * (Player.STEP) - 2);
+        player.setGravity(player.getGravity() - Player.RUNNINGJUMPING_GRAVITY_OFFSET);
         player.setVelY((int) -player.getGravity());
         if (player.getGravity() <= 0.0) {
             player.currentState = PlayerState.falling;

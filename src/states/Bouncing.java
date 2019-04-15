@@ -19,8 +19,8 @@ public class Bouncing implements StateMachine {
     @Override
     public void update(Player player) {
         player.accumulateFatigue();
-        player.setVelX(player.getFacing() * -1 * 2.5);
-        player.setGravity(player.getGravity() - 0.3);
+        player.setVelX(player.getFacing() * -1 * Player.BOUNCING_RANGE);
+        player.setGravity(player.getGravity() - Player.GRAVITY_OFFSET);
         player.setVelY((int) -player.getGravity());
         if (player.getGravity() <= 0.0 || player.getFatigue() >= player.getSTAMINA()) {
             player.currentState = PlayerState.falling;

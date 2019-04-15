@@ -10,11 +10,11 @@ public class StandingJumping implements StateMachine {
     public void handleKeyInput(Player player, List<Input.Key> keys) {
         if(keys.get(2).down) {
             player.setFacing(-1);
-            player.setVelX(-1 * (player.getStep() / 1.5));
+            player.setVelX(-1 * (Player.STEP / Player.STANDINGJUMPING_VELX_OFFSET));
         }
         else if(keys.get(3).down) {
             player.setFacing(1);
-            player.setVelX((player.getStep() / 1.5));
+            player.setVelX((Player.STEP / Player.STANDINGJUMPING_VELX_OFFSET));
         }
         else if(keys.get(4).down && !PlayerState.dashing.isTired) {
             player.setVelY(0);
@@ -25,7 +25,7 @@ public class StandingJumping implements StateMachine {
 
     @Override
     public void update(Player player) {
-        player.setGravity(player.getGravity() - 0.3);
+        player.setGravity(player.getGravity() - Player.GRAVITY_OFFSET);
         player.setVelY((int) -player.getGravity());
         if (player.getGravity() <= 0.0) {
                player.currentState = PlayerState.falling;

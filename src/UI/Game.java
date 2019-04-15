@@ -24,19 +24,19 @@ public class Game extends Canvas implements Runnable {
     public static final int HEIGHT = WIDTH / 14*10;
     public static final int SCALE = 4;
     public static final int TILE_SIZE = 64;
-    public static final int playerWidth = 100;
-    public static final int playerHeight = 100;
+    public static final int playerWidth = 96;
+    public static final int playerHeight = 96;
 
     //Sprite sheet
     public static SpriteSheet spriteSheet;
 
     //UI.Game object
-    private static Sprite[] playerMoveFrame;
     public static  Sprite wall;
     public static Sprite spike;
+    public static Sprite coin;
 
-    //level
-    private BufferedImage level;
+    //currentLevel
+    private BufferedImage currentLevel;
 
     //Handler
     public static  Handler handler;
@@ -85,17 +85,17 @@ public class Game extends Canvas implements Runnable {
         spriteSheet = new SpriteSheet("/res/spriteSheet.png");
         wall = new Sprite(spriteSheet, 1, 1);
         spike = new Sprite(spriteSheet, 1, 2);
+        coin = new Sprite(spriteSheet, 1, 9);
 
         //BufferedImage object
-        level = ResourceManager.getInstance().getImage("/res/TEST3.png");
+        currentLevel = ResourceManager.getInstance().getImage("/res/TEST3.png");
 
         //Game object
-        playerMoveFrame = new Sprite[8];
         handler = new Handler();
         cam = new Camera();
 
-        //Create level
-        handler.createLevel(level);
+        //Create currentLevel
+        handler.createLevel(currentLevel);
 
         keyListener = new Input();
 
@@ -162,10 +162,5 @@ public class Game extends Canvas implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         game.start();
-    }
-
-    //getters and setters
-    public static Sprite[] getPlayerMoveFrame() {
-        return playerMoveFrame;
     }
 }

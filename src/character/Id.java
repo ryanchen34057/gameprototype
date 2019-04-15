@@ -1,5 +1,5 @@
 package character;
 
 public enum Id {
-    wall, player,spike,
+    wall, player,spike, coin,
 }

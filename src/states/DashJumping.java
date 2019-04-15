@@ -13,7 +13,7 @@ public class DashJumping implements StateMachine {
 
     @Override
     public void update(Player player) {
-        player.setVelX(player.getFacing() * (player.getStep() * 2));
+        player.setVelX(player.getFacing() * (Player.STEP * 2));
         player.setGravity(player.getGravity() - 0.25);
         player.setVelY((int) -player.getGravity());
         if (player.getGravity() <= 0.0) {

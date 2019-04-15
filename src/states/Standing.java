@@ -17,7 +17,7 @@ public class Standing implements StateMachine {
             player.currentState = PlayerState.running;
         }
         else if(keys.get(5).down) {
-            player.setGravity(10.0);
+            player.setGravity(Player.STANDINGJUMPING_GRAVITY);
             player.currentState = PlayerState.standingJumping;
         }
         else if(keys.get(4).down && !PlayerState.dashing.isTired) {
